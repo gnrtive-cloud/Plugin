@@ -1,0 +1,38 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.querySelector('#business-loan-form');
+    if (!form || !window.FormSubmissionMonitor) {
+        return;
+    }
+
+    const statusEl = form.querySelector('.submission-message');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        statusEl.hidden = false;
+        statusEl.textContent = 'Submitting...';
+
+        try {
+            const response = await fetch(FormSubmissionMonitor.root, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-WP-Nonce': FormSubmissionMonitor.nonce,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error('Unable to submit form.');
+            }
+
+            statusEl.textContent = 'Thank you! Your request was submitted.';
+            form.reset();
+        } catch (error) {
+            statusEl.textContent = 'Something went wrong. Please try again.';
+        }
+    });
+});

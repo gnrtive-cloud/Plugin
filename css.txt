@@ -1,0 +1,8 @@
+.wrap .widefat td,
+.wrap .widefat th {
+    vertical-align: top;
+}
+
+.wrap .widefat td:nth-child(4) {
+    font-weight: 600;
+}
